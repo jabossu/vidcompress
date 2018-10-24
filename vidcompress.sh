@@ -5,12 +5,14 @@ while [ "$1" != '' ]
 do
 	if	[ "$1" == "-h" ]
 	then
-		echo "You can use the following options :
-		-h : for help
-		-i inputfile
-		-o outputfile
-		-p preset : same as in ffmpeg
-		-t time : only convert the firts 'time' minutes
+		echo "SYNTAX : vidcompress [OPTIONS] [-i] inputfile
+You can use the following options :
+	-h 		: this help.
+	-i INPUTFILE	: the -i argument can be omitted. You have to provide the filename.
+	-p PRESET 	: same presets as in ffmpeg.
+	-r		: auto remove INPUTFILE when re-encoding is done
+	-t MIN		: needs to be an integer. Only convert the first 'MIN' minutes. 
+				  Usefull for testing everything works fine.
 		"
 		exit 0
 	elif	[ "$1" == "-i" ]
