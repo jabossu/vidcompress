@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Starting variables
+autoremove=false
+
 # READING OPTIONS
 while [ "$1" != '' ]
 do
@@ -37,6 +40,9 @@ You can use the following options :
 			echo " * WARNING : incorrect time entered, ignoring argument"
 		fi
 		shift
+	elif	[ "$1" == '-r' ]
+	then
+		autoremove=true
 	else
 		if  [ -f "$(pwd)/$1" ]
 		then 
@@ -76,4 +82,4 @@ fi
 
 echo " * Converting file to $o"
 
-ffmpeg -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -preset $p "$o"
+ffmpeg -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -preset $p "$o" && $autoremove && rm $inputfile
