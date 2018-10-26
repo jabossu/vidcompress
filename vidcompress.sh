@@ -2,6 +2,7 @@
 
 # Starting variables
 autoremove=false
+forceconversion=false
 
 # READING OPTIONS
 while [ "$1" != '' ]
@@ -16,6 +17,8 @@ You can use the following options :
 	-r		: auto remove INPUTFILE when re-encoding is done
 	-t MM:SS	: Only convert the first MM:SS 
 			  Usefull for testing everything works fine.
+	-f		: Force conversion of every file, even if
+			  the finame contains '265'
 		"
 		exit 0
 	elif	[ "$1" == "-i" ]
@@ -43,6 +46,9 @@ You can use the following options :
 	elif	[ "$1" == '-r' ]
 	then
 		autoremove=true
+	elif	[[ $1 == '-f' ]]
+	then
+		forceconvertion=true
 	else
 		if  [ -f "$(pwd)/$1" ]
 		then 
@@ -68,6 +74,12 @@ else
 		echo " * ERROR : $inputfile : no such file"
 		exit 1
 	fi
+fi
+
+if [[ "$inputfile" =~ *264* ]] && [[ $forceconvertion == false ]]
+then
+	echo " * ERROR : Filename contains a reference to the x265 codec. This file will be skipped. Use '-f' to force conversion."
+	exit 1
 fi
 
 #finding out output filename
