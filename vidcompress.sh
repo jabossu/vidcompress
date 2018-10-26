@@ -11,8 +11,8 @@ You can use the following options :
 	-i INPUTFILE	: the -i argument can be omitted. You have to provide the filename.
 	-p PRESET 	: same presets as in ffmpeg.
 	-r		: auto remove INPUTFILE when re-encoding is done
-	-t MIN		: needs to be an integer. Only convert the first 'MIN' minutes. 
-				  Usefull for testing everything works fine.
+	-t MM:SS	: Only convert the first MM:SS 
+			  Usefull for testing everything works fine.
 		"
 		exit 0
 	elif	[ "$1" == "-i" ]
@@ -30,9 +30,9 @@ You can use the following options :
 		shift
 	elif	[ "$1" == "-t" ]
 	then
-		if [[ "$2" =~ [0-9]+ ]]
+		if [[ "$2" =~ ^([0-9]{1,2}:)?[0-9]{2}$ ]]
 		then
-			t="-t $2:00"
+			t="-t $2"
 		else
 			echo " * WARNING : incorrect time entered, ignoring argument"
 		fi
