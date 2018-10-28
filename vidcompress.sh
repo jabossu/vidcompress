@@ -2,7 +2,7 @@
 
 # Starting variables
 autoremove=false
-forceconversion=false
+forceconvertion=false
 
 # READING OPTIONS
 while [ "$1" != '' ]
@@ -86,7 +86,7 @@ fi
 	o=$(echo $inputfile |rev| cut -d. -f2- | rev )
 	if [[ $o == *"264"* ]]
 	then
-		o="$(echo $o | sed 's/264/265/')"
+		o="$(echo $o | sed 's/(.*)264/265/')"
 	else
 		o=$o.libx265
 	fi
