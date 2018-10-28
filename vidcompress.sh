@@ -3,6 +3,7 @@
 # Starting variables
 autoremove=false
 forceconvertion=false
+simulate_only=false
 
 # READING OPTIONS
 while [ "$1" != '' ]
@@ -19,6 +20,7 @@ You can use the following options :
 			  Usefull for testing everything works fine.
 	-f		: Force conversion of every file, even if
 			  the finame contains '265'
+	-s		: Simulates : only prints what would be done
 		"
 		exit 0
 	elif	[ "$1" == "-i" ]
@@ -49,6 +51,8 @@ You can use the following options :
 	elif	[[ $1 == '-f' ]]
 	then
 		forceconvertion=true
+	elif	[[ $1 == '-s' ]]
+	       simulate_only=true	
 	else
 		if  [ -f "$(pwd)/$1" ]
 		then 
@@ -94,4 +98,9 @@ fi
 
 echo " * Converting file to $o"
 
-ffmpeg -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -preset $p "$o" && $autoremove && rm $inputfile
+if [[ $simulate_only == true ]]
+then
+	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
+else
+	ffmpeg -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -preset $p "$o" && $autoremove && rm $inputfile
+fi
