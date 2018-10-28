@@ -94,7 +94,7 @@ fi
 	o=$(echo $inputfile |rev| cut -d. -f2- | rev )
 	if [[ $o == *"264"* ]]
 	then
-		o="$(echo $o | sed 's/(.*)264/265/')"
+		o="$(echo $o | sed -r 's/(.*)264/\1265/')"
 	else
 		o=$o.libx265
 	fi
