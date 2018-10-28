@@ -45,14 +45,18 @@ You can use the following options :
 			echo " * WARNING : incorrect time entered, ignoring argument"
 		fi
 		shift
+	
 	elif	[ "$1" == '-r' ]
 	then
 		autoremove=true
+	
 	elif	[[ $1 == '-f' ]]
 	then
 		forceconvertion=true
+	
 	elif	[[ $1 == '-s' ]]
-	       simulate_only=true	
+	then
+		simulate_only=true	
 	else
 		if  [ -f "$(pwd)/$1" ]
 		then 
