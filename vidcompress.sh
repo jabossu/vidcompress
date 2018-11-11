@@ -5,6 +5,15 @@ autoremove=false
 forceconvertion=false
 simulate_only=false
 
+
+# Output formating
+boldtxt=$(tput bold)
+normtxt=$(tput sgr0)
+undetxt=$(tput smul)
+
+# Welcoming user
+echo "Welcome to Vidcompress"
+
 # READING OPTIONS
 while [ "$1" != '' ]
 do
@@ -91,20 +100,28 @@ then
 fi
 
 #finding out output filename
-	o=$(echo $inputfile |rev| cut -d. -f2- | rev )
-	if [[ $o == *"264"* ]]
+	title=$(echo $inputfile |rev| cut -d. -f2- | rev )
+	if [[ $title == *"264"* ]]
 	then
-		o="$(echo $o | sed -r 's/(.*)264/\1265/')"
+		title="$(echo $title | sed -r 's/(.*)264/\1265/')"
 	else
-		o=$o.libx265
+		t=$title.libx265
 	fi
-	o=$o.mkv
+	o=$title.mkv
 
-echo " * Converting file to $o"
+echo " * Converting file to ${undetxt}$o${normtxt}"
 
 if [[ $simulate_only == true ]]
 then
 	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
 else
-	ffmpeg -hide_banner -loglevel error -stats -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -x265-params log-level=error -preset $p "$o" && $autoremove && rm $inputfile
+	ffmpeg -hide_banner -loglevel quiet -stats \
+		-i "$inputfile" $t \
+		-metadata title="$title" \
+		-c:a aac -b:a 128k \
+		-c:v libx265 -x265-params log-level=error \
+		-preset $p "$o" \
+	&& $autoremove && rm $inputfile
 fi
+
+echo "Exiting. Goodbye"
