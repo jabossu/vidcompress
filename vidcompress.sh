@@ -106,5 +106,5 @@ if [[ $simulate_only == true ]]
 then
 	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
 else
-	ffmpeg -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -preset $p "$o" && $autoremove && rm $inputfile
+	ffmpeg -hide_banner -loglevel error -stats -i "$inputfile" $t -c:a aac -b:a 128k -c:v libx265 -x265-params log-level=error -preset $p "$o" && $autoremove && rm $inputfile
 fi
