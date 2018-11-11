@@ -121,7 +121,7 @@ else
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
 		-preset $p "$o" \
-	&& $autoremove && rm $inputfile
+	&& $autoremove && rm $inputfile && echo " * Removing source file"
 fi
 
 echo "Exiting. Goodbye"
