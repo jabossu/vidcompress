@@ -61,7 +61,7 @@ You can use the following options :
 	then
 		autoremove=true
 	
-	elif	[ "$1" == '-v']
+	elif	[ "$1" == '-v' ]
 	then
 		loglevel=info
 
