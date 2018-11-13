@@ -4,6 +4,7 @@
 autoremove=false
 forceconvertion=false
 simulate_only=false
+loglevel=quiet
 
 
 # Output formating
@@ -30,6 +31,7 @@ You can use the following options :
 	-f		: Force conversion of every file, even if
 			  the finame contains '265'
 	-s		: Simulates : only prints what would be done
+	-v		: Enable verbose output
 		"
 		exit 0
 	elif	[ "$1" == "-i" ]
@@ -59,6 +61,10 @@ You can use the following options :
 	then
 		autoremove=true
 	
+	elif	[ "$1" == '-v']
+	then
+		loglevel=info
+
 	elif	[[ $1 == '-f' ]]
 	then
 		forceconvertion=true
@@ -105,7 +111,7 @@ fi
 	then
 		title="$(echo $title | sed -r 's/(.*)264/\1265/')"
 	else
-		t=$title.libx265
+		title=$title.libx265
 	fi
 	o=$title.mkv
 
@@ -115,7 +121,7 @@ if [[ $simulate_only == true ]]
 then
 	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
 else
-	ffmpeg -hide_banner -loglevel quiet -stats \
+	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
 		-i "$inputfile" $t \
 		-metadata title="$title" \
 		-c:a aac -b:a 128k \
