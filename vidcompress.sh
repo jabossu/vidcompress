@@ -5,6 +5,7 @@ autoremove=false
 forceconvertion=false
 simulate_only=false
 loglevel=quiet
+priority=10
 
 
 # Output formating
@@ -24,6 +25,7 @@ do
 You can use the following options :
 	-h 		: this help.
 	-i INPUTFILE	: the -i argument can be omitted. You have to provide the filename.
+	-n NICEVALUE	: set the priority of the ffmpeg process. Default : 10
 	-p PRESET 	: same presets as in ffmpeg.
 	-r		: auto remove INPUTFILE when re-encoding is done
 	-t MM:SS	: Only convert the first MM:SS 
@@ -60,7 +62,15 @@ You can use the following options :
 	elif	[ "$1" == '-r' ]
 	then
 		autoremove=true
-	
+
+	elif	[ "$1" == '-n' ]
+	then
+		if [[ "$2" =~ ^[1-9]{1,2}$ ]]
+		then
+			priority=$2
+		fi
+		shift
+
 	elif	[ "$1" == '-v' ]
 	then
 		loglevel=info
@@ -121,6 +131,7 @@ if [[ $simulate_only == true ]]
 then
 	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
 else
+	nice -n "$priority" \
 	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
 		-i "$inputfile" $t \
 		-metadata title="$title" \
