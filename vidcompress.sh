@@ -109,7 +109,7 @@ else
 	fi
 fi
 
-if [[ "$inputfile" =~ *264* ]] && [[ $forceconvertion == false ]]
+if [[ "$inputfile" =~ "265" ]] && [[ $forceconvertion == false ]]
 then
 	echo " * ERROR : Filename contains a reference to the x265 codec. This file will be skipped. Use '-f' to force conversion."
 	exit 1
