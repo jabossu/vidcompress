@@ -6,6 +6,7 @@ forceconvertion=false
 simulate_only=false
 loglevel=quiet
 priority=10
+preset=fast
 
 
 # Output formating
@@ -46,7 +47,7 @@ You can use the following options :
 		then
 			echo " * WARNING : Preset not found, ignored"
 		else
-			p=$2
+			preset=$2
 		fi
 		shift
 	elif	[ "$1" == "-t" ]
@@ -91,11 +92,6 @@ You can use the following options :
 	shift
 done
 
-if [[ $p == "" ]]
-then
-	p=medium
-fi
-
 # CHECKING INPUTFILE
 if [ "$inputfile" == '' ]
 then
@@ -131,7 +127,7 @@ echo " * Converting file to ${undetxt}$o${normtxt}"
 
 if [[ $simulate_only == true ]]
 then
-	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $p $o"
+	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $preset $o"
 else
 	nice -n "$priority" \
 	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
@@ -139,7 +135,7 @@ else
 		-metadata title="$title" \
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
-		-preset $p "$o" \
+		-preset $preset "$o" \
 	&& $autoremove && rm "$title*" && echo " * Removing source file and associated files"
 fi
 
