@@ -109,7 +109,7 @@ else
 	fi
 fi
 
-if [[ "$inputfile" =~ *264* ]] && [[ $forceconvertion == false ]]
+if [[ "$inputfile" =~ *265* ]] && [[ $forceconvertion == false ]]
 then
 	echo " * ERROR : Filename contains a reference to the x265 codec. This file will be skipped. Use '-f' to force conversion."
 	exit 1
@@ -117,7 +117,7 @@ fi
 
 #finding out output filename
 	title=$(echo $inputfile |rev| cut -d. -f2- | rev )
-	if [[ $title == *"264"* ]]
+	if [[ $title == *264* ]]
 	then
 		title="$(echo $title | sed -r 's/(.*)264/\1265/')"
 	else
@@ -138,7 +138,7 @@ else
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
 		-preset $p "$o" \
-	&& $autoremove && rm "$inputfile" && echo " * Removing source file"
+	&& $autoremove && rm "$title*" && echo " * Removing source file"
 fi
 
 echo "Exiting. Goodbye"
