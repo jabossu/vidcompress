@@ -1,6 +1,6 @@
 #! /bin/bash
 
-version=1.8.3
+version=1.8.5
 
 # Starting variables
 autoremove=false
@@ -131,7 +131,7 @@ fi
 #Finding out duration of the video to convert
 if [[ $duration ==  "" ]] # If -t was given, $duration already contains the time to convert, so we skip this step
 then
-	duration="$(ffprobe $inputfile 2>&1 | grep Duration | head -n 1 | cut -d " " -f 4 | cut -d "." -f 1)"
+	duration=$(ffprobe "$inputfile" 2>&1 | grep Duration | head -n 1 | cut -d " " -f 4 | cut -d "." -f 1)
 fi
 
 ## Finally starting working for real.
@@ -139,7 +139,7 @@ fi
 echo -e " * Converting file to\t${undetxt}$o${normtxt}"
 echo -e " * Video duration :\t$duration"
 echo -e " * Chosen preset :\t$preset"
-$autoremove && echo " * autoremove enabled"
+$autoremove && echo -e " * Autoremove :\tEnabled"
 
 if [[ $simulate_only == true ]]
 then
@@ -152,9 +152,11 @@ else
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
 		-preset $preset "$o" \
-	&& $autoremove && rm "$title_264" && echo " * Removing source file and associated files" || exit 1
+	&& isok=true || exit 1
+	$isok && $autoremove && rm -r "$title_264"* && echo " * Removing source file and associated files"
 	output_filesize="$(du -h "$o" | cut -f1)"
-	echo -e " - reduced filesize from ${boldtext}$input_filesize${normtext} to ${boldtext}$output_filesize${normtext}\n"
+	echo -e " * Reduced filesize from ${boldtext}$input_filesize${normtext} to ${boldtext}$output_filesize${normtext}"
+	echo " " #newline
 fi
 
 #echo "Exiting. Goodbye"
