@@ -1,5 +1,7 @@
 #! /bin/bash
 
+version=1.8.3
+
 # Starting variables
 autoremove=false
 forceconvertion=false
@@ -15,7 +17,7 @@ normtxt=$(tput sgr0)
 undetxt=$(tput smul)
 
 # Welcoming user
-echo "Welcome to Vidcompress"
+echo -e "\nVidcompress $version"
 
 # READING OPTIONS
 while [ "$1" != '' ]
@@ -55,6 +57,7 @@ You can use the following options :
 		if [[ "$2" =~ ^([0-9]{1,2}:)?[0-9]{2}$ ]]
 		then
 			t="-t $2"
+			duration=$2
 		else
 			echo " * WARNING : incorrect time entered, ignoring argument"
 		fi
@@ -105,6 +108,7 @@ else
 	fi
 fi
 
+input_filesize="$(du -h "$inputfile" | cut -f1)"
 
 if [[ "$inputfile" =~ "265" ]] && [[ $forceconvertion == false ]]
 
@@ -123,7 +127,19 @@ fi
 	fi
 	o=$title_265.mkv
 
-echo " * Converting file to ${undetxt}$o${normtxt}"
+
+#Finding out duration of the video to convert
+if [[ $duration ==  "" ]] # If -t was given, $duration already contains the time to convert, so we skip this step
+then
+	duration="$(ffprobe $inputfile 2>&1 | grep Duration | head -n 1 | cut -d " " -f 4 | cut -d "." -f 1)"
+fi
+
+## Finally starting working for real.
+
+echo -e " * Converting file to\t${undetxt}$o${normtxt}"
+echo -e " * Video duration :\t$duration"
+echo -e " * Chosen preset :\t$preset"
+$autoremove && echo " * autoremove enabled"
 
 if [[ $simulate_only == true ]]
 then
@@ -136,7 +152,9 @@ else
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
 		-preset $preset "$o" \
-	&& $autoremove && rm "$title_264" && echo " * Removing source file and associated files"
+	&& $autoremove && rm "$title_264" && echo " * Removing source file and associated files" || exit 1
+	output_filesize="$(du -h "$o" | cut -f1)"
+	echo -e " - reduced filesize from ${boldtext}$input_filesize${normtext} to ${boldtext}$output_filesize${normtext}\n"
 fi
 
-echo "Exiting. Goodbye"
+#echo "Exiting. Goodbye"
