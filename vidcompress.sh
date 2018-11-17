@@ -119,7 +119,7 @@ fi
 
 #finding out output filename
 	title_264=$(echo $inputfile |rev| cut -d. -f2- | rev )
-	if [[ $title == *264* ]]
+	if [[ $title_264 =~ 264 ]]
 	then
 		title_265="$(echo $title_264 | sed -r 's/(.*)264/\1265/')"
 	else
