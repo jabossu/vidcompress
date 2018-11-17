@@ -114,14 +114,14 @@ then
 fi
 
 #finding out output filename
-	title=$(echo $inputfile |rev| cut -d. -f2- | rev )
+	title_264=$(echo $inputfile |rev| cut -d. -f2- | rev )
 	if [[ $title == *264* ]]
 	then
-		title="$(echo $title | sed -r 's/(.*)264/\1265/')"
+		title_265="$(echo $title_264 | sed -r 's/(.*)264/\1265/')"
 	else
-		title=$title.libx265
+		title_265=$title_264.libx265
 	fi
-	o=$title.mkv
+	o=$title_265.mkv
 
 echo " * Converting file to ${undetxt}$o${normtxt}"
 
@@ -136,7 +136,7 @@ else
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
 		-preset $preset "$o" \
-	&& $autoremove && rm "$title*" && echo " * Removing source file and associated files"
+	&& $autoremove && rm "$title_264" && echo " * Removing source file and associated files"
 fi
 
 echo "Exiting. Goodbye"
