@@ -122,13 +122,13 @@ fi
 	if [[ $title_264 =~ 264 ]]
 	then
 		title_265="$(echo $title_264 | sed -r 's/(.*)264/\1265/')"
-		if [[ autoremove == true ]]
+	else
+		title_265=$title_264.libx265
+		if [[ $autoremove == true ]]
 		then
 			echo " * Input filename doesn't countain 264 keyword. Autremove disabled"
 			autoremove=false
 		fi
-	else
-		title_265=$title_264.libx265
 	fi
 	o=$title_265.mkv
 
