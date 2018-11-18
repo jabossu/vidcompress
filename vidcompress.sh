@@ -11,7 +11,7 @@ priority=10
 preset=fast
 configfile="$HOME/.config/vidcompress.conf"
 
-[[ -f $configfile ]] && source $configfile || echo "# Vidcompress config file" > $configfile 
+[[ -f $configfile ]] && source $configfile || echo "# Vidcompress config file" > $configfile 2>/dev/null
 
 echo $preset
 echo $priority
