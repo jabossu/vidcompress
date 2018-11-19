@@ -1,6 +1,6 @@
 #! /bin/bash
 
-version=1.9.2
+version=1.9.4
 
 # Starting variables
 autoremove=false
@@ -31,6 +31,7 @@ do
 You can use the following options :
 	-h 		: this help.
 	-i INPUTFILE	: the -i argument can be omitted. You have to provide the filename.
+	-k		: keep the source file
 	-n NICEVALUE	: set the priority of the ffmpeg process. Default : 10
 	-p PRESET 	: same presets as in ffmpeg.
 	-r		: auto remove INPUTFILE when re-encoding is done
@@ -47,6 +48,11 @@ You can use the following options :
 	then
 		inputfile=$2
 		shift
+	
+	elif	[[ "$1" == -k ]]
+	then
+		autoremove=false	
+
 	elif	[ "$1" == "-p" ]
 	then
 		if [[ ! "ultrafast.veryfast.fast.medium.slow.veryslow.ultraslow" == *"$2"* ]]
@@ -178,8 +184,8 @@ else
 	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
 		-i "$inputfile" $t \
 		-metadata title="$title" \
-		-c:a aac -b:a 128k \
-		-c:v libx265 -x265-params log-level=error \
+		-c:a copy \
+		-c:v libx265 -x265-params log-level=error i\
 		$param_resize \
 		-preset $preset \
 		"$o" \
