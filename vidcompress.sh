@@ -1,6 +1,6 @@
 #! /bin/bash
 
-version=1.8.7
+version=1.9.2
 
 # Starting variables
 autoremove=false
@@ -10,6 +10,7 @@ loglevel=quiet
 priority=10
 preset=fast
 configfile="$HOME/.config/vidcompress.conf"
+resize=false 
 
 [[ -f $configfile ]] && source $configfile || echo "# Vidcompress config file" > $configfile 2>/dev/null
 
@@ -33,6 +34,7 @@ You can use the following options :
 	-n NICEVALUE	: set the priority of the ffmpeg process. Default : 10
 	-p PRESET 	: same presets as in ffmpeg.
 	-r		: auto remove INPUTFILE when re-encoding is done
+	-rz 720 / 1080	: resize file to target resolution
 	-t MM:SS	: Only convert the first MM:SS 
 			  Usefull for testing everything works fine.
 	-f		: Force conversion of every file, even if
@@ -68,6 +70,16 @@ You can use the following options :
 	elif	[ "$1" == '-r' ]
 	then
 		autoremove=true
+
+	elif 	[[ "$1" == '-rz' ]]
+	then
+		if [[ "$2" =~ ^(720|1080)$ ]]
+		then
+			resize=$2
+		else
+			echo " * Resolution $2 not supported, ignoring parameter"
+		fi
+		shift
 
 	elif	[ "$1" == '-n' ]
 	then
@@ -141,16 +153,26 @@ then
 	duration=$(ffprobe "$inputfile" 2>&1 | grep Duration | head -n 1 | cut -d " " -f 4 | cut -d "." -f 1)
 fi
 
+# Creating the command parameter if user wants to resize video
+if [[ $resize != false ]]
+then
+	param_resize="-vf size=-2:$resize"
+else
+	param_resize=""
+fi
+
+
 ## Finally starting working for real.
 
 echo -e " * Converting file to\t${undetxt}$o${normtxt}"
 echo -e " * Video duration :\t$duration"
 echo -e " * Chosen preset :\t$preset"
-$autoremove && echo -e " * Autoremove :\tEnabled"
+$autoremove && echo -e " * Autoremove :\t\tEnabled"
+[[ "$resize" ]]  && echo -e " * Target resolution :\t$resize p"
 
 if [[ $simulate_only == true ]]
 then
-	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 -preset $preset $o"
+	echo "ffmpeg -i $inputfile $t -ca aac -ba 128k -c:v libx265 $param_resize -preset $preset $o"
 else
 	nice -n "$priority" \
 	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
@@ -158,7 +180,9 @@ else
 		-metadata title="$title" \
 		-c:a aac -b:a 128k \
 		-c:v libx265 -x265-params log-level=error \
-		-preset $preset "$o" \
+		$param_resize \
+		-preset $preset \
+		"$o" \
 	&& isok=true || exit 1
 	$isok && $autoremove && rm -r "$title_264"* && echo " * Removing source file and associated files"
 	output_filesize="$(du -h "$o" | cut -f1)"
