@@ -101,7 +101,7 @@ You can use the following options :
 	then
 		simulate_only=true	
 	else
-		if  [ -f "$(pwd)/$1" ]
+		if  [ -f "$1" ]
 		then 
 			inputfile=$1
 		fi
@@ -115,7 +115,7 @@ then
 	echo " * ERROR : Missing argument : specify inputfile"
 	exit 1
 else
-	if [ ! -f "$(pwd)/$inputfile" ]
+	if [ ! -f "$inputfile" ]
 	then
 		echo " * ERROR : $inputfile : no such file"
 		exit 1
