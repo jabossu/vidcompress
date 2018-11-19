@@ -156,7 +156,7 @@ fi
 # Creating the command parameter if user wants to resize video
 if [[ $resize != false ]]
 then
-	param_resize="-vf size=-2:$resize"
+	param_resize="-vf scale=-2:$resize"
 else
 	param_resize=""
 fi
