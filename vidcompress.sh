@@ -13,7 +13,6 @@ configfile="$HOME/.config/vidcompress.conf"
 
 [[ -f $configfile ]] && source $configfile || echo "# Vidcompress config file" > $configfile 2>/dev/null
 
-
 # Output formating
 boldtxt=$(tput bold)
 normtxt=$(tput sgr0)
