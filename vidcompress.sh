@@ -1,12 +1,13 @@
 #! /bin/bash
 
-version=1.9.2
+version=1.9.4
+time_start="$(date +%s)"
 
 # Starting variables
 autoremove=false
 forceconvertion=false
 simulate_only=false
-loglevel=quiet
+loglevel=error
 priority=10
 preset=fast
 configfile="$HOME/.config/vidcompress.conf"
@@ -20,7 +21,7 @@ normtxt=$(tput sgr0)
 undetxt=$(tput smul)
 
 # Welcoming user
-echo -e "\nVidcompress $version"
+echo -e "\nVidcompress $version - starting at $(date +%R)"
 
 # READING OPTIONS
 while [ "$1" != '' ]
@@ -31,6 +32,7 @@ do
 You can use the following options :
 	-h 		: this help.
 	-i INPUTFILE	: the -i argument can be omitted. You have to provide the filename.
+	-k		: keep the source file
 	-n NICEVALUE	: set the priority of the ffmpeg process. Default : 10
 	-p PRESET 	: same presets as in ffmpeg.
 	-r		: auto remove INPUTFILE when re-encoding is done
@@ -47,6 +49,11 @@ You can use the following options :
 	then
 		inputfile=$2
 		shift
+	
+	elif	[[ "$1" == -k ]]
+	then
+		autoremove=false	
+
 	elif	[ "$1" == "-p" ]
 	then
 		if [[ ! "ultrafast.veryfast.fast.medium.slow.veryslow.ultraslow" == *"$2"* ]]
@@ -167,8 +174,8 @@ fi
 echo -e " * Converting file to\t${undetxt}$o${normtxt}"
 echo -e " * Video duration :\t$duration"
 echo -e " * Chosen preset :\t$preset"
-$autoremove && echo -e " * Autoremove :\t\tEnabled"
-[[ "$resize" ]]  && echo -e " * Target resolution :\t$resize p"
+[[ $autoremove != false ]] && echo -e " * Autoremove :\t\tEnabled"
+[[ "$resize" != false ]]  && echo -e " * Target resolution :\t$resize p"
 
 if [[ $simulate_only == true ]]
 then
@@ -178,7 +185,7 @@ else
 	ffmpeg -hide_banner -loglevel "$loglevel" -stats \
 		-i "$inputfile" $t \
 		-metadata title="$title" \
-		-c:a aac -b:a 128k \
+		-c:a copy \
 		-c:v libx265 -x265-params log-level=error \
 		$param_resize \
 		-preset $preset \
@@ -186,7 +193,8 @@ else
 	&& isok=true || exit 1
 	$isok && $autoremove && rm -r "$title_264"* && echo " * Removing source file and associated files"
 	output_filesize="$(du -h "$o" | cut -f1)"
-	echo -e " * Reduced filesize from ${boldtext}$input_filesize${normtext} to ${boldtext}$output_filesize${normtext}"
+	time_end="$(date +%s)"
+	echo -e " * Reduced filesize from ${boldtext}$input_filesize${normtext} to ${boldtext}$output_filesize${normtext} in $((time_end-time_start))s"
 	echo " " #newline
 fi
 
