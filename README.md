@@ -12,5 +12,5 @@ But the command is a little bit tedious to my taste, especially considering i al
 * use `vidcompress -h` to get an idea of the syntax and options
 
 ## Note
-I wrote this script for my own use. It's probably poorly writtent, very un-elegant and very much improvable, but i dont really care. I would be pleased to read suggestion and tricks to improve this script, but don't feel ofended if I don't edit it, or even answer your comments. I just posted it here because I enjoy putting my stuff on github.
+I wrote this script for my own use. It's probably poorly written, very un-elegant and very much improvable, but i dont really care. I would be pleased to read suggestion and tricks to improve this script, but don't feel offended ~~when~~ if I don't edit it, or even answer your comments. I just posted it here because I enjoy putting my stuff on github.
 Thank you very much :-)
